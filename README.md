@@ -21,3 +21,4 @@ Ni Y, Xue D, Chi W, et al. CSFAFormer: Category-Selective Feature Aggregation Tr
 https://doi.org/10.1016/j.inffus.2025.103786
 
 In addition, we have also released some related research and code for single-modal remote sensing image semantic segmentation, which can be found on our main page at the SMRSSeg link.
+https://github.com/EvilGhostY/SMRSSeg
