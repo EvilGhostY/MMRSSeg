@@ -1,0 +1,13 @@
+On Windows , the Terminal path needs to be set to the parent directory of MMRSSeg, and then use the following command.
+vaihingen：
+python MMRSSeg/train_supervision.py -c  MMRSSeg/config/vaihingen/csfaformer.py
+python MMRSSeg/vaihingen_test.py -c MMRSSeg/config/vaihingen/csfaformer.py -o fig_MMRSSeg/results/vaihingen/csfaformer_test 
+
+potsdam：
+python MMRSSeg/train_supervision.py -c MMRSSeg/config/potsdam/csfaformer.py
+python MMRSSeg/potsdam_test.py -c MMRSSeg/config/potsdam/csfaformer.py -o MMRSSeg/fig_results/potsdam/csfaformer_test
+
+whusar：
+python MMRSSeg/train_supervision.py -c MMRSSeg/config/whusar/csfaformer.py
+python MMRSSeg/whu_test.py -c MMRSSeg/config/whusar/csfaformer.py -o MMRSSeg/fig_results/whusar/csfaformer_test
+
