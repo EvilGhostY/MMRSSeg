@@ -9,7 +9,7 @@ CSFAFormer (Category-Selective Feature Aggregation Transformer) is a novel multi
 
 Our training and testing framework follows UNetFormer (https://github.com/WangLibo1995/GeoSeg), which is a well-established framework, thanks to the author LiBo Wang for sharing it.
 
-Simply add config, losses and models to its framework and it is ready to run.The execution command is in Terminal_config.txt.
+The execution command is in Terminal_config.txt.
 
 The relevant code is being organized and will be posted as soon as possible.
 
