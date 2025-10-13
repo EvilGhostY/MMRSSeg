@@ -15,6 +15,8 @@ The relevant code is being organized and will be posted as soon as possible.
 
 We will also upload our complete patch dataset to Baidu Cloud, and the download link will be released later.
 
+We tried uploading it to Google Drive, but due to payment issues, we were unsuccessful. For now, we can only provide the download link from Baidu Cloud.
+
 If you find this project useful in your research, please consider citing：
 
 Ni Y, Xue D, Chi W, et al. CSFAFormer: Category-Selective Feature Aggregation Transformer for Multimodal Remote Sensing Image Semantic Segmentation[J]. Information Fusion, 2025: 103786.
