@@ -427,25 +427,25 @@ class Mlp_decoder(nn.Module):
 class DualChannelSplitConcat(nn.Module):
     def __init__(self, rgb_channels, dsm_channels, num_splits):
         super(DualChannelSplitConcat, self).__init__()
-        assert rgb_channels % num_splits == 0, "第一个张量的通道数量必须能够被分割数整除。"
-        assert dsm_channels % num_splits == 0, "第二个张量的通道数量必须能够被分割数整除。"
+        assert rgb_channels % num_splits == 0, 
+        assert dsm_channels % num_splits == 0, 
 
         self.num_splits = num_splits
         self.split_size1 = rgb_channels // num_splits
         self.split_size2 = dsm_channels // num_splits
 
     def forward(self, x1, x2):
-        # 使用 torch.chunk 拆分通道
+        # 
         x1_split = torch.chunk(x1, self.num_splits, dim=1)  # (num_splits, B, split_size1, H, W)
         x2_split = torch.chunk(x2, self.num_splits, dim=1)  # (num_splits, B, split_size2, H, W)
 
-        # 交叉拼接x1和x2的拆分
+        # 
         output_splits = []
         for i in range(self.num_splits):
-            output_splits.append(x1_split[i])  # 添加x1的拆分
-            output_splits.append(x2_split[i])  # 添加x2的拆分
+            output_splits.append(x1_split[i])  #
+            output_splits.append(x2_split[i])  # 
 
-        # 将所有拆分拼接在一起 (B, C1 + C2, H, W)
+        # 
         output = torch.cat(output_splits, dim=1)
 
         return output
@@ -551,67 +551,57 @@ class MutiClass_SegHead(nn.Module):
 
 def top2_prob_difference1(prob_map):
     """
-    计算每个像素点的前两个最大概率之间的绝对差值，并将其归一化到 [0, 1] 范围内。
-
-    :param prob_map: Tensor，大小为 [B, K, H, W]，其中 B 是 batch 大小，K 是类别数，H, W 是图像大小
-    :return: Tensor，大小为 [B, H, W]，每个像素的前两个最大概率的绝对差值，归一化到 [0, 1] 范围
+    :param prob_map: Tensor，[B, K, H, W]，
+    :return: Tensor，[B, H, W]，
     """
-    # 获取每个像素点的前两个最大概率及其类别
+    # 
     prob_map = F.softmax(prob_map, dim=1)
     top2_probs, _ = torch.topk(prob_map, 2, dim=1)  # top2_probs: [B, 2, H, W]
-    # 计算前两个最大概率的差值的绝对值
-    prob_diff = top2_probs[:, 0] - top2_probs[:, 1]  # 绝对值计算
-    # 判断 prob_diff 是否都大于等于 0，如果有负值，则置为 0
-    prob_diff = torch.clamp(prob_diff, min=0)  # 保证 diff 不小于 0
-    # 归一化到 [0, 1] 范围内
-    # 在 H 和 W 维度上找到最小值和最大值
+    # 
+    prob_diff = top2_probs[:, 0] - top2_probs[:, 1]  # 
+    # 
+    prob_diff = torch.clamp(prob_diff, min=0)  # 
+    # 
+    # 
     prob_diff_min = prob_diff.view(prob_diff.shape[0], -1).min(dim=1, keepdim=True)[0].view(prob_diff.shape[0], 1,
-                                                                                            1)  # 每张图的最小值
+                                                                                            1)  # 
     prob_diff_max = prob_diff.view(prob_diff.shape[0], -1).max(dim=1, keepdim=True)[0].view(prob_diff.shape[0], 1,
-                                                                                            1)  # 每张图的最大值
+                                                                                            1)  # 
 
-    # 归一化到 [0, 1] 范围
+    # 
     prob_diff_normalized = (prob_diff - prob_diff_min) / (prob_diff_max - prob_diff_min + 1e-8)  # 防止除以 0
 
-    return prob_diff_normalized  # 返回归一化的差值图
+    return prob_diff_normalized  # 
 
 def top2_prob_difference(prob_map):
     """
-    计算每个像素点的前两个最大概率之间的绝对差值，并将其归一化到 [0, 1] 范围内。
-
-    :param prob_map: Tensor，大小为 [B, K, H, W]，其中 B 是 batch 大小，K 是类别数，H, W 是图像大小
-    :return: Tensor，大小为 [B, H, W]，每个像素的前两个最大概率的绝对差值，归一化到 [0, 1] 范围
     """
-    # 获取每个像素点的前两个最大概率及其类别
+    #
     prob_map = F.softmax(prob_map, dim=1)
     top2_probs, _ = torch.topk(prob_map, 2, dim=1)  # top2_probs: [B, 2, H, W]
-    # 计算前两个最大概率的差值的绝对值
-    prob_diff = torch.abs(top2_probs[:, 0] - top2_probs[:, 1])  # 绝对值计算
-    prob_diff_normalized = prob_diff  # 归一化到 [0, 1]
+    # 
+    prob_diff = torch.abs(top2_probs[:, 0] - top2_probs[:, 1])  #
+    prob_diff_normalized = prob_diff  # 
 
-    return prob_diff_normalized  # 返回归一化后的差值图
+    return prob_diff_normalized  # 
 
 def compute_entropy(prob_map):
     """
-    计算每个像素点的类别概率分布的信息熵，并进行最大值归一化
-
-    :param prob_map: Tensor，大小为 [B, K, H, W]，其中 B 是 batch 大小，K 是类别数，H, W 是图像大小
-    :return: Tensor，大小为 [B, H, W]，每个像素的信息熵，归一化到 [0, 1]
     """
-    # 避免 log(0) 的情况，加入一个小的常数 epsilon
+    # 
     epsilon = 1e-8
-    # 对概率图进行 softmax 归一化，确保每个类别的概率之和为 1
-    prob_map = F.softmax(prob_map, dim=1)  # 在类别维度上计算 softmax
-    # 计算信息熵：-sum(p_k * log(p_k))
-    entropy_map = -torch.sum(prob_map * torch.log(prob_map + epsilon), dim=1)  # 沿类别维度求和
-    # 最大信息熵为 log(K)
-    K = prob_map.shape[1]  # 获取类别数
-    max_entropy = torch.log(torch.tensor(K, dtype=torch.float32))  # 计算最大信息熵
+    # 
+    prob_map = F.softmax(prob_map, dim=1)  # 
+    # -sum(p_k * log(p_k))
+    entropy_map = -torch.sum(prob_map * torch.log(prob_map + epsilon), dim=1)  # 
+    # 
+    K = prob_map.shape[1]  # 
+    max_entropy = torch.log(torch.tensor(K, dtype=torch.float32))  # 
 
-    # 对信息熵进行最大值归一化
-    normalized_entropy_map = entropy_map / max_entropy  # 归一化到 [0, 1]
+    # 
+    normalized_entropy_map = entropy_map / max_entropy  # 
 
-    return 1.0 - normalized_entropy_map  # 返回大小为 [B, H, W] 的归一化信息熵图
+    return 1.0 - normalized_entropy_map  # 
 
 class Dual_Aux_Enhancement(nn.Module):
     def __init__(self, num_classes=6, mode='mutli', eps=1e-8, aux=False):
@@ -659,20 +649,20 @@ class GLSTB(nn.Module):
         self.rgb_split_channels = rgbv_dim // num_classes
         self.dsm_split_channels = dsmv_dim // num_classes
 
-        # 初始化垂直和水平方向的处理模块
+        # 
         self.msa_v, self.rgb_local_v, self.rgb_conv_v, self.dsm_local_v, self.dsm_conv_v  \
             = self._init_heads(query_dim, key_dim, rgbv_dim, dsmv_dim, num_classes, nums_heads,mlp_ratio, 'v')
         self.msa_h, self.rgb_local_h, self.rgb_conv_h, self.dsm_local_h, self.dsm_conv_h \
             = self._init_heads(query_dim, key_dim, rgbv_dim, dsmv_dim, num_classes, nums_heads,mlp_ratio, 'h')
 
     def _init_heads(self, query_dim, key_dim, rgbv_dim, dsmv_dim, num_classes, nums_heads, mlp_ratio, mode):
-        # 计算每个头的维度
+        # 
         per_class_query_dim = query_dim // num_classes
         per_class_key_dim = key_dim // num_classes
         per_class_rgbv_dim = rgbv_dim // num_classes
         per_class_dsmv_dim = dsmv_dim // num_classes
 
-        # 如果每个类别的维度小于 nums_heads，需要扩展
+        # 
         if per_class_query_dim < nums_heads:
             repeat_factor = nums_heads // per_class_query_dim
             remainder = nums_heads % per_class_query_dim
@@ -706,7 +696,7 @@ class GLSTB(nn.Module):
         c_dsm = dsm.size(1)
         k = qk.size(1)
 
-        # 扩展 qk 张量
+        # 
         if k // self.num_classes < self.nums_heads:
             repeat_factor = self.nums_heads // (k // self.num_classes)
             remainder = self.nums_heads % (k // self.num_classes)
@@ -715,7 +705,7 @@ class GLSTB(nn.Module):
             if remainder > 0:
                 qk = torch.cat([qk, qk[:, :remainder, :, :]], dim=1)
 
-        # 根据垂直和水平方向选择合适的视图
+        # 
         if is_vertical:
             qk_view = qk.permute(0, 3, 2, 1).reshape(b * w, h, -1).contiguous()
             rgb_view = rgb.permute(0, 3, 2, 1).reshape(b * w, h, c_rgb).contiguous()
@@ -725,7 +715,7 @@ class GLSTB(nn.Module):
             rgb_view = rgb.permute(0, 2, 3, 1).reshape(b * h, w, c_rgb).contiguous()
             dsm_view = dsm.permute(0, 2, 3, 1).reshape(b * h, w, c_dsm).contiguous()
 
-        # 分割 qk 和 x 按类别进行处理
+        # 
         qk_chunks = torch.chunk(qk_view, self.num_classes, dim=-1)
         rgb_chunks = torch.chunk(rgb_view, self.num_classes, dim=-1)
         dsm_chunks = torch.chunk(dsm_view, self.num_classes, dim=-1)
@@ -755,11 +745,11 @@ class GLSTB(nn.Module):
     def forward(self, qk, x, dsm):
         qk = qk * self.weight_ratio
 
-        # 垂直处理
+        # 
         rgb_v, dsm_v, vscores = self._process_heads(qk, x.clone(), dsm.clone(), self.msa_v, self.rgb_local_v,
                                           self.rgb_conv_v, self.dsm_local_v, self.dsm_conv_v, is_vertical=True)
 
-        # 水平处理
+        # 
         rgb_h, dsm_h, hscores = self._process_heads(qk, rgb_v.clone(), dsm_v.clone(), self.msa_h, self.rgb_local_h,
                                                     self.rgb_conv_h, self.dsm_local_h, self.dsm_conv_h, is_vertical=False)
 
@@ -1002,17 +992,14 @@ class Decoder(nn.Module):
 
 def visualize_entropy_and_diff(prob_map):
     """
-    计算并展示信息熵和前两个最大概率差值图像
-
-    :param prob_map: Tensor，大小为 [B, K, H, W]，其中 B 是 batch 大小，K 是类别数，H, W 是图像大小
     """
-    # 获取第一个 batch 的结果进行展示
-    entropy_map = prob_map[0].detach().cpu().numpy()  # 获取第一个图像的归一化熵
+    # 
+    entropy_map = prob_map[0].detach().cpu().numpy()  # 
 
-    # 获取类别数 K
+    # 
     num_classes = entropy_map.shape[0]
 
-    # 显示图像
+    # 
     plt.figure(figsize=(12, 6))
 
     for i in range(num_classes):
@@ -1135,7 +1122,7 @@ class CSFAFormer(nn.Module):
 
         dsm_channels = [info['num_chs'] for info in self.dsmbackbone.feature_info]
 
-        ## DSM特征提取
+        ## 
         #       self.dsmbackbone = SwinTransformer(embed_dim=embed_dim, depths=depths, num_heads=num_heads,
         #                                       frozen_stages=frozen_stages)
         #        dsm_channels = dsmencoder_channels
@@ -1255,4 +1242,5 @@ if __name__ == '__main__':
     print(DSM_Pre3.shape)
 
     total = sum([param.nelement() for param in net.parameters()])
+
     print("Number of parameter: %.2fM" % (total / 1e6))
