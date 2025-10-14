@@ -14,6 +14,8 @@ The execution command is in Terminal_config.txt.
 The relevant code is being organized and will be posted as soon as possible.
 
 We will also upload our complete patch dataset to Baidu Cloud, and the download link will be released later.
+（File_name：Cut_Muti_Modal_datasets.rar
+Link: https://pan.baidu.com/s/17CD2siDwyO7CyxpgC-m2tw?pwd=bvkq password: bvkq）
 
 We tried uploading it to Google Drive, but due to payment issues, we were unsuccessful. For now, we can only provide the download link from Baidu Cloud.
 
