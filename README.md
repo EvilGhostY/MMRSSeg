@@ -13,7 +13,7 @@ The execution command is in Terminal_config.txt.
 
 The relevant code is being organized and will be posted as soon as possible.
 
-We will also upload our complete patch dataset to Baidu Cloud, and the download link will be released later.
+Since the tool code used to generate patch images from the original images is relatively complex, we have uploaded the pre-processed patch data to Baidu Cloud for your convenience.
 （File_name：Cut_Muti_Modal_datasets.rar
 Link: https://pan.baidu.com/s/17CD2siDwyO7CyxpgC-m2tw?pwd=bvkq password: bvkq）
 
