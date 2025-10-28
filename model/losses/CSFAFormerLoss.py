@@ -239,8 +239,8 @@ class CSFAFormerLoss(nn.Module):
             weight1 = 1.0   #0.6
             weight2 = 1.0   #0.3
             weight3 = 1.0   #0.2
-            weight_rgb = 0.0
-            weight_dsm = 0.0
+            weight_rgb = 1.0
+            weight_dsm = 1.0
             out, RGB_Pre1, DSM_Pre1, RGB_Pre2, DSM_Pre2, RGB_Pre3, DSM_Pre3= logits
             loss_main = self.main_loss(out, labels)
             loss_rgb1 =( self.main_loss(RGB_Pre1, labels))* weight1
