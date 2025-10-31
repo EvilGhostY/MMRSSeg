@@ -427,8 +427,8 @@ class Mlp_decoder(nn.Module):
 class DualChannelSplitConcat(nn.Module):
     def __init__(self, rgb_channels, dsm_channels, num_splits):
         super(DualChannelSplitConcat, self).__init__()
-        assert rgb_channels % num_splits == 0, 
-        assert dsm_channels % num_splits == 0, 
+        assert rgb_channels % num_splits == 0, "The number of channels in the first tensor must be divisible by the number of splits."
+        assert dsm_channels % num_splits == 0, "The number of channels in the first tensor must be divisible by the number of splits."
 
         self.num_splits = num_splits
         self.split_size1 = rgb_channels // num_splits
@@ -1244,4 +1244,5 @@ if __name__ == '__main__':
     total = sum([param.nelement() for param in net.parameters()])
 
     print("Number of parameter: %.2fM" % (total / 1e6))
+
 
