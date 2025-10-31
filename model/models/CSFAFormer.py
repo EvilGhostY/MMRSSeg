@@ -1228,7 +1228,7 @@ if __name__ == '__main__':
 
     num_classes = 6
     in_batch, inchannel, in_h, in_w = 4, 3, 512, 512
-    x = torch.randn(in_batch, 2, in_h, in_w).cuda()
+    x = torch.randn(in_batch, 3, in_h, in_w).cuda()
     ir = torch.randn(in_batch, 1, in_h, in_w).cuda()
     dsm = torch.randn(in_batch, 1, in_h, in_w).cuda()
     net = CSFAFormer(num_classes).cuda()
@@ -1244,5 +1244,6 @@ if __name__ == '__main__':
     total = sum([param.nelement() for param in net.parameters()])
 
     print("Number of parameter: %.2fM" % (total / 1e6))
+
 
 
