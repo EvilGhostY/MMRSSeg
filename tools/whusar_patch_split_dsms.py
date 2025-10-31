@@ -27,18 +27,15 @@ def seed_everything(seed):
 
 
 # Building label values: [B, G, R] (BGR order)
-# ===== 定义每个类别的颜色 =====
-Shadow_Background = np.array([0, 0, 0])        # label 0
-Water            = np.array([200, 150, 0])     # label 1
-Tree             = np.array([0, 100, 0])       # label 2
-Grass            = np.array([113, 179, 60])    # label 3
-Road             = np.array([212, 255, 127])   # label 4
-Sand             = np.array([32, 165, 218])    # label 5
-Soil_Bareland    = np.array([63, 133, 205])    # label 6
-Building         = np.array([130, 0, 75])      # label 7
-Cement_Road      = np.array([200, 200, 200])   # label 8
-Other            = np.array([250, 250, 255])   # label 9
-num_classes = 10
+Backgroud = np.array([0, 0, 0])  # label 0
+Farmland = np.array([0, 102, 204])  # label 1
+City = np.array([0, 0, 255])  # label 2
+Village = np.array([0, 255, 255])  # label 3
+Water = np.array([255, 0, 0])  # label 4
+Forest = np.array([0, 166, 85])  # label 5
+Road = np.array([255, 255, 93]) # label 6
+Others = np.array([153, 102, 152]) # label 7
+num_classes = 8
 
 
 # split huge RS image to small patches
@@ -90,69 +87,32 @@ def get_img_mask_padded(image, ir_n, dsm_n, mask, patch_size, mode):
     return img_pad, ir_pad, dsm_pad, mask_pad
 
 
-def pv2rgb(mask: np.ndarray) -> np.ndarray:
-    """
-    将语义分割标签图 (单通道 mask) 转换为 BGR 彩色图。
-    类别编号对应:
-        0: Shadow_Background
-        1: Water
-        2: Tree
-        3: Grass
-        4: Road
-        5: Sand
-        6: Soil_Bareland
-        7: Building
-        8: Cement_Road
-        9: Other
-    """
-    h, w = mask.shape
-    mask_rgb = np.zeros((h, w, 3), dtype=np.uint8)
-
-    # 映射规则 (B, G, R)
-    mask_rgb[mask == 0] = [0, 0, 0]         # Shadow_Background
-    mask_rgb[mask == 1] = [200, 150, 0]     # Water
-    mask_rgb[mask == 2] = [0, 100, 0]       # Tree
-    mask_rgb[mask == 3] = [113, 179, 60]    # Grass
-    mask_rgb[mask == 4] = [212, 255, 127]   # Road
-    mask_rgb[mask == 5] = [32, 165, 218]    # Sand
-    mask_rgb[mask == 6] = [63, 133, 205]    # Soil_Bareland
-    mask_rgb[mask == 7] = [130, 0, 75]      # Building
-    mask_rgb[mask == 8] = [200, 200, 200]   # Cement_Road
-    mask_rgb[mask == 9] = [250, 250, 255]   # Other
+def pv2rgb(mask):
+    h, w = mask.shape[0], mask.shape[1]
+    mask_rgb = np.zeros(shape=(h, w, 3), dtype=np.uint8)
+    mask_convert = mask[np.newaxis, :, :]
+    mask_rgb[np.all(mask_convert == 0, axis=0)] = [0, 0, 0]
+    mask_rgb[np.all(mask_convert == 1, axis=0)] = [0, 102, 204]
+    mask_rgb[np.all(mask_convert == 2, axis=0)] = [0, 0, 255]
+    mask_rgb[np.all(mask_convert == 3, axis=0)] = [0, 255, 255]
+    mask_rgb[np.all(mask_convert == 4, axis=0)] = [255, 0, 0]
+    mask_rgb[np.all(mask_convert == 5, axis=0)] = [0, 166, 85]
+    mask_rgb[np.all(mask_convert == 6, axis=0)] = [255, 255, 93]
+    mask_rgb[np.all(mask_convert == 7, axis=0)] = [153, 102, 152]
 
     return mask_rgb
 
-
-def car_color_replace(mask):
-    mask = cv2.cvtColor(np.array(mask.copy()), cv2.COLOR_RGB2BGR)
-    mask[np.all(mask == [0, 255, 255], axis=-1)] = [0, 204, 255]
-
-    return mask
-
-
-def rgb_to_2D_label(_label: np.ndarray) -> np.ndarray:
-    """
-    将BGR彩色标签图转换为单通道类别图（0~9）
-    输入:
-        _label: ndarray(H, W, 3)，BGR格式图像（如cv2.imread结果）
-    输出:
-        label_seg: ndarray(H, W)，每个像素为类别编号(0-9)
-    """
-    h, w, _ = _label.shape
-    label_seg = np.zeros((h, w), dtype=np.uint8)
-
-    # 逐类别匹配（BGR）
-    label_seg[np.all(_label == Shadow_Background, axis=-1)] = 0
-    label_seg[np.all(_label == Water, axis=-1)] = 1
-    label_seg[np.all(_label == Tree, axis=-1)] = 2
-    label_seg[np.all(_label == Grass, axis=-1)] = 3
-    label_seg[np.all(_label == Road, axis=-1)] = 4
-    label_seg[np.all(_label == Sand, axis=-1)] = 5
-    label_seg[np.all(_label == Soil_Bareland, axis=-1)] = 6
-    label_seg[np.all(_label == Building, axis=-1)] = 7
-    label_seg[np.all(_label == Cement_Road, axis=-1)] = 8
-    label_seg[np.all(_label == Other, axis=-1)] = 9
-
+def rgb_to_2D_label(_label):
+    _label = _label.transpose(2, 0, 1)
+    label_seg = np.zeros(_label.shape[1:], dtype=np.uint8)
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Backgroud, axis=-1)] = 0
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Farmland, axis=-1)] = 1
+    label_seg[np.all(_label.transpose([1, 2, 0]) == City, axis=-1)] = 2
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Village, axis=-1)] = 3
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Water, axis=-1)] = 4
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Forest, axis=-1)] = 5
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Road, axis=-1)] = 6
+    label_seg[np.all(_label.transpose([1, 2, 0]) == Others, axis=-1)] = 7
     return label_seg
 
 def image_augment(image, ir, dsm, mask, patch_size, mode='train', val_scale=1.0):
