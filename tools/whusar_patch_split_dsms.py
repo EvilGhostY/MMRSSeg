@@ -202,11 +202,11 @@ def patch_format(inp):
     else:
         img_path = img_path + '.tif'
     irrgb = Image.open(img_path).convert('RGBA')
-    ir_np = np.array(irrgb)[:, :, 3]  # IR
+    ir_np = np.array(irrgb)[:, :, 3]  # channels=4，set=3；channel=3，set=2
     img_np = np.array(irrgb)[:, :, 0:3]  # RGB
     # === 转回 PIL.Image 格式 ===
-    ir = Image.fromarray(ir_np)  # 单通道灰度图
-    img = Image.fromarray(img_np, mode='RGB')  # 三通道彩色图
+    ir = Image.fromarray(ir_np)  # 
+    img = Image.fromarray(img_np, mode='RGB')  # 
     # print(img)
     dsm_path = dsm_path + '_AD.png'
     dsm = Image.open(dsm_path).convert('RGB')
