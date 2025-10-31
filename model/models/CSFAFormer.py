@@ -106,7 +106,7 @@ class GroupedLinear(nn.Module):
         assert in_features % num_groups == 0, "in_features must be divisible by num_groups"
         assert out_features % num_groups == 0, "out_features must be divisible by num_groups"
 
-        # 定义每个组的线性变换
+        # 
         self.linears = nn.ModuleList([
             nn.Linear(self.in_features_per_group, self.out_features_per_group, bias=bias)
             for _ in range(num_groups)
@@ -114,15 +114,15 @@ class GroupedLinear(nn.Module):
 
     def forward(self, x):
         b, N, c_in = x.size()
-        # 直接reshape，而不是split
+        # 
         x_reshaped = x.view(b, N, self.num_groups,
                             self.in_features_per_group)  # reshape to (b, N, num_groups, in_features_per_group)
         x_reshaped = x_reshaped.permute(0, 2, 1, 3)  # Change shape to (b, num_groups, N, in_features_per_group)
 
-        # 每个组独立进行线性变换
+        # 
         out_split = [self.linears[i](x_reshaped[:, i, :, :]) for i in range(self.num_groups)]
 
-        # 将各组的输出合并
+        # 
         return torch.cat(out_split, dim=-1)
 
 class ChannelPool(nn.Module):
@@ -297,12 +297,12 @@ class Dual_MultiHeadAttention(nn.Module):
         scores = scores / (split_size_qk ** 0.5)
         scores = F.softmax(scores, dim=3)
 
-        ## RGB特征聚合
+        ## RGB
         rgb_out = torch.matmul(scores, rgb_values)  # [h, N, T_q, num_units/h]
         rgb_out = torch.cat(torch.split(rgb_out, 1, dim=0), dim=3).squeeze(0)  # [N, T_q, num_units]
         rgb_out = self.rgb_out(rgb_out)
 
-        ## DSM特征聚合
+        ## DSM
         dsm_out = torch.matmul(scores, dsm_values)  # [h, N, T_q, num_units/h]
         dsm_out = torch.cat(torch.split(dsm_out, 1, dim=0), dim=3).squeeze(0)  # [N, T_q, num_units]
         dsm_out = self.dsm_out(dsm_out)
@@ -1244,3 +1244,4 @@ if __name__ == '__main__':
     total = sum([param.nelement() for param in net.parameters()])
 
     print("Number of parameter: %.2fM" % (total / 1e6))
+
