@@ -8,27 +8,36 @@ Currently, this repository includes the following works:
 🛰️ C²AHSegFormer: Cross-Modal Class-Distribution Alignment Hierarchical Transformer for Semantic Segmentation of Remote Sensing Images
 
 📖 Introduction
-Multimodal remote sensing data provide complementary spectral, structural, and elevation information, offering significant potential for improving semantic segmentation performance. However, effectively exploiting heterogeneous information across different modalities remains challenging due to modality discrepancies, category ambiguity, and inconsistent semantic responses.
+Multimodal remote sensing data provide complementary spectral, structural, and elevation information, offering significant potential for improving semantic segmentation performance. 
+However, effectively exploiting heterogeneous information across different modalities remains challenging due to modality discrepancies, category ambiguity, and inconsistent semantic responses.
 To address these challenges, we propose two multimodal semantic segmentation frameworks:
 🛰️ CSFAFormer
 CSFAFormer (Category-Selective Feature Aggregation Transformer) is a multimodal semantic segmentation framework designed to effectively integrate complementary information from different remote sensing modalities.
-The framework focuses on category-aware feature aggregation and selective multimodal information fusion, enabling the network to capture both local spatial details and global semantic dependencies while reducing the interference caused by inconsistent or redundant modal information.
 🛰️ C²AHSegFormer
 C²AHSegFormer (Cross-Modal Class-Distribution Alignment Hierarchical Transformer) is designed to further address the semantic inconsistency problem among different modalities.
-The framework explores cross-modal class-distribution alignment and hierarchical feature interaction, aiming to establish more consistent semantic representations across heterogeneous remote sensing modalities and improve the robustness of multimodal feature fusion.
 🛠️ Framework
 Our training and testing pipeline is built upon the excellent UNetFormer / GeoSeg framework developed by LiBo Wang.
+
 We sincerely thank the author for sharing the implementation and providing a solid foundation for remote sensing semantic segmentation research.https://github.com/WangLibo1995/GeoSeg
+
 🚀 Getting Started
+
 The execution commands and environment configuration can be found in:
+
 Terminal_config.txt
+
 Please refer to this file for detailed instructions on training and testing the models.
+
 The relevant source code is currently being organized and will be released progressively.
+
 📂 Dataset Preparation
-Since the tool code used to generate patch images from the original images is relatively complex, we have uploaded the pre-processed patch data to Baidu Cloud for your convenience.
+
+Since the tool code used to generate patch images from the original images is relatively complex, 
+we have uploaded the pre-processed patch data to Baidu Cloud for your convenience.
 （File_name：Cut_Muti_Modal_datasets.rar
 Link: https://pan.baidu.com/s/17CD2siDwyO7CyxpgC-m2tw?pwd=bvkq password: bvkq）
 We tried uploading it to Google Drive, but due to payment issues, we were unsuccessful. For now, we can only provide the download link from Baidu Cloud.
+
 📄 Citation
 If you find this project useful for your research, please consider citing our papers:
 Ni Y, Xue D, Chi W, et al. CSFAFormer: Category-Selective Feature Aggregation Transformer for Multimodal Remote Sensing Image Semantic Segmentation[J]. Information Fusion, 2025: 103786.
