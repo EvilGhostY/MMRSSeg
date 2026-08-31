@@ -1309,7 +1309,7 @@ class C2AHSegformer(nn.Module):
 
         h, w = vis.size()[-2:]
         grad_x, grad_y, grad_magnitude = self.dsmp(dsm)
-        x = torch.cat((vis, ir), dim=1)
+        x = vis
         dsm = torch.cat((dsm, grad_x, grad_y), dim=1)
 
         # Encoder ResNet50
