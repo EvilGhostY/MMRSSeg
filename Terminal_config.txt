@@ -1,4 +1,5 @@
 On Windows , the Terminal path needs to be set to the parent directory of MMRSSeg, and then use the following command.
+CAFAFormer:
 vaihingen：
 python MMRSSeg/train_supervision.py -c  MMRSSeg/config/vaihingen/csfaformer.py
 python MMRSSeg/vaihingen_test.py -c MMRSSeg/config/vaihingen/csfaformer.py -o fig_MMRSSeg/results/vaihingen/csfaformer_test 
@@ -11,3 +12,16 @@ whusar：
 python MMRSSeg/train_supervision.py -c MMRSSeg/config/whusar/csfaformer.py
 python MMRSSeg/whu_test.py -c MMRSSeg/config/whusar/csfaformer.py -o MMRSSeg/fig_results/whusar/csfaformer_test
 
+
+C2AHSegFormer:
+vaihingen：
+python MMRSSeg/train_supervision.py -c  MMRSSeg/config/vaihingen/c2ahsegformer.py
+python MMRSSeg/vaihingen_test.py -c MMRSSeg/config/vaihingen/c2ahsegformer.py -o fig_MMRSSeg/results/vaihingen/c2ahsegformer_test 
+
+potsdam：
+python MMRSSeg/train_supervision.py -c MMRSSeg/config/potsdam/c2ahsegformer.py
+python MMRSSeg/potsdam_test.py -c MMRSSeg/config/potsdam/c2ahsegformer.py -o MMRSSeg/fig_results/potsdam/c2ahsegformer_test
+
+whusar：
+python MMRSSeg/train_supervision.py -c MMRSSeg/config/whusar/c2ahsegformer.py
+python MMRSSeg/whu_test.py -c MMRSSeg/config/whusar/c2ahsegformer.py -o MMRSSeg/fig_results/whusar/c2ahsegformer_test
