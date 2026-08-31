@@ -1,5 +1,5 @@
 On Windows , the Terminal path needs to be set to the parent directory of MMRSSeg, and then use the following command.
-CAFAFormer:
+CSFAFormer:
 vaihingen：
 python MMRSSeg/train_supervision.py -c  MMRSSeg/config/vaihingen/csfaformer.py
 python MMRSSeg/vaihingen_test.py -c MMRSSeg/config/vaihingen/csfaformer.py -o fig_MMRSSeg/results/vaihingen/csfaformer_test 
