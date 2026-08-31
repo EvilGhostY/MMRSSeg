@@ -12,6 +12,7 @@ Currently, this repository includes the following works:
 🛰️ C²AHSegFormer: Cross-Modal Class-Distribution Alignment Hierarchical Transformer for Semantic Segmentation of Remote Sensing Images
 
 📖 Introduction
+
 Multimodal remote sensing data provide complementary spectral, structural, and elevation information, offering significant potential for improving semantic segmentation performance. 
 
 However, effectively exploiting heterogeneous information across different modalities remains challenging due to modality discrepancies, category ambiguity, and inconsistent semantic responses.
