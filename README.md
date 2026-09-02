@@ -61,6 +61,7 @@ Ni Y, Xue D, Chi W, et al. CSFAFormer: Category-Selective Feature Aggregation Tr
 https://doi.org/10.1016/j.inffus.2025.103786
 
 Ni Y, Liu J, Chi W, et al. C2AHSegFormer: cross-modal class-distribution alignment hierarchical transformer for semantic segmentation of remote sensing images[J]. Expert Systems with Applications, 2026: 134139.
+https://doi.org/10.1016/j.eswa.2026.134139
 
 🔗 Related Project
 
